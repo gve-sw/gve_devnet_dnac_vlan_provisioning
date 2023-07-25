@@ -1,0 +1,10 @@
+servers:
+  server-name-01:
+    alias: DNA 01
+    address: 10.10.10.10
+  server-name-02:
+    alias: DNA 02
+    address: 10.20.20.20
+templates:
+  project: DNAC_Project
+  template: api_port_vlan_config

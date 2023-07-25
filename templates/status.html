@@ -1,0 +1,102 @@
+{% extends "masterPage.html" %}
+
+{% block content %}
+
+
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="steps steps--primary">
+            <div class="step visited">
+                <div class="step__icon"><span class="icon-check"></span></div>
+                <div class="step__label">Select Device</div>
+            </div>
+            <div class="step visited">
+                <div class="step__icon"><span class="icon-check"></span></div>
+                <div class="step__label">Create VLAN(s)</div>
+            </div>
+            <div class="step active">
+                <div class="step__icon">3</div>
+                <div class="step__label">Deploy Config</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-xl-3 col-md-3">
+    </div>
+
+    <div class="col-xl-6 col-md-6">
+        <div class="section">
+            <div class="panel panel--loose panel--raised base-margin-bottom">
+                <form action="/status" method="POST">
+                    <button class="btn btn--primary pull-right">Refresh Status</button>
+                </form>
+
+                <h2 class="subtitle">Step 5: Deployment</h2>
+                <p>Check task status below.</p>
+
+                <div class="section">
+                    {% if not status %}
+                    <div class="alert alert--info">
+                        <div class="alert__icon icon-info-outline"></div>
+                        <div class="alert__message">Template deployment starting...<br>Please wait a few moments &
+                            refresh task status.</div>
+                    </div>
+                    {% elif status == "inprogress" %}
+                    <div class="alert alert--info">
+                        <div class="alert__icon icon-info-outline"></div>
+                        <div class="alert__message">Template deployment in progress...<br>Please wait a few moments &
+                            refresh task status. {% if error %}<br><br>Status: {{ error }} {% endif %}</div>
+                    </div>
+                    {% elif status == "success" %}
+                    <div class="alert alert--success">
+                        <div class="alert__icon icon-check-outline"></div>
+                        <div class="alert__message">Template deployed!</div>
+                    </div>
+                    <b>Configuration applied to device: </b>
+                    <div class="form-group base-margin-bottom">
+
+                        <div class="form-group__text">
+                            <textarea id="textarea-state-disabled" rows="20" disabled=""
+                                style="font: 1.3rem Inconsolata, monospace;">
+{{ deployed_config }}
+                            </textarea>
+                        </div>
+                    </div>
+                    {% elif status == "fail" %}
+                    <div class="alert alert--danger">
+                        <div class="alert__icon icon-error-outline"></div>
+                        <div class="alert__message"><b>Deployment Failed</b><br>
+                            <br>Error:<br>{{ error }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <hr>
+                    <form action="/reset" method="GET">
+                        <button class="btn btn--ghost pull-right">Start Over</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col-xl-3 col-md-3">
+</div>
+</div>
+
+
+
+
+{% endblock %}

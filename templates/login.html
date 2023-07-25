@@ -1,0 +1,96 @@
+<!-- This login page offers various input field to gather global information like API Keys, 
+    login name or password in advance of starting the demo.-->
+
+{% extends "masterPage.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- Left Rail -->
+    <div class="col-xl-3 col-md-3">
+    </div>
+
+    <!-- Middle Rail -->
+    <div class="col-xl-6 col-md-6">
+        <div class="section">
+            <div class="panel panel--loose panel--raised base-margin-bottom">
+                <form action="/login" method="POST">
+                    <div class="section">
+
+                        <div class="flex flex-center" style="margin-bottom:20px;">
+                            <img id="customer-logo" src="{{ url_for('static', filename='images/logo.png')}}">
+                        </div>
+
+                        <div class="flex flex-center" style="margin-bottom:20px;">
+                            <p><b>
+                                    {{ customer_name }}
+                                </b>
+                            </p>
+                        </div>
+
+                        <hr>
+                        <div class="flex flex-center" style="margin-bottom:20px;">
+                            <p>
+                            <h2>DNAC VLAN Provisioning</h2>
+                            </p>
+                        </div>
+
+                        {% if error %}
+                        <div class="alert alert--danger">
+                            <div class="alert__icon icon-error-outline"></div>
+                            <div class="alert__message">
+                                {{ error }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!--Login fields-->
+                        <div class="form-group base-margin-bottom">
+                            <div class="form-group__text">
+                                <input name="username" id="login-name" type="text" required=""
+                                    onfocus="showOriginalText('Start Demo')">
+                                <label for="login-name">Username*</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group base-margin-bottom">
+                            <div class="form-group__text">
+                                <input name="password" id="input-type-password" type="password" value="" required=""
+                                    onfocus="showOriginalText('Start Demo')">
+                                <label for="input-type-password">Password*</label>
+                            </div>
+                        </div>
+
+
+                        <!--Dropdown Select-->
+                        <div class="form-group base-margin-bottom">
+                            <div class="form-group__text select">
+                                <select name="server" id="input-type-select" onfocus="showOriginalText('Log in')">
+                                    {% for server in dnac.servers %}
+                                    <option value="{{server}}">{{ dnac.servers[server].alias }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="input-type-select">DNA Center Server</label>
+                            </div>
+                        </div>
+
+
+                        <!--CUSTOMIZE END-->
+
+                        <!-- Button area-->
+                        <input id="login-submit" onclick="showLoadingText()" onload="showOriginalText('Login')"
+                            class="btn btn-primary" type="submit" value="Login">
+                        <span class="required-label pull-right">* required fields</span>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Rail -->
+    <div class="col-xl-3 col-md-3">
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "masterPage.html" %}
+
+{% block content %}
+
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="steps steps--primary">
+            <div class="step active">
+                <div class="step__icon"><span class="icon-check"></span></div>
+                <div class="step__label">Select Device</div>
+            </div>
+            <div class="step">
+                <div class="step__icon"
+                    style="border: var(--cui-step-line-thickness-inactive) solid var(--cui-color-gray-400);">2</div>
+                <div class="step__label">Create VLAN(s)</div>
+            </div>
+            <div class="step">
+                <div class="step__icon"
+                    style="border: var(--cui-step-line-thickness-inactive) solid var(--cui-color-gray-400);">3</div>
+                <div class="step__label">Deploy Config</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-xl-1 col-md-1">
+    </div>
+
+    <div class="col-xl-2 col-md-2">
+        <div class="section">
+            <div class="panel panel--loose panel--raised base-margin-bottom">
+                <h2 class="subtitle">Step 1: Filter Devices</h2>
+                <div class="section">
+                    <p>Find device by searching for device name.</p>
+
+                    <form action="/select-device" method="POST">
+                        <div class="section">
+                            <div class="form-group base-margin-bottom">
+                                <div class="form-group__text">
+                                    <input id="device-filter" name="device-filter" type="text" required="">
+                                    <label for="device-filter">Filter String:</label>
+                                </div>
+                                <div class="help-block" role="alert">
+                                    <span>*Case sensitive</span>
+                                </div>
+                            </div>
+
+                            <div class="pull-right section">
+                                <input id="submit" onclick="showLoadingText()" onload="showOriginalText('Search')"
+                                    class="btn btn-primary" type="submit" value="Search">
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-8 col-md-8">
+        <div class="section">
+            <div class="panel panel--loose panel--raised base-margin-bottom">
+                <h2 class="subtitle">Step 2: Select Device</h2>
+                <p>Select target device below for provisioning</p>
+
+                <div class="section">
+                    <form action="/select-device" method="POST">
+                        <div class="responsive-table">
+                            <table class="table table--lined table--selectable table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                        </th>
+                                        <th class="sortable">Device</th>
+                                        <th class="text-center">Reachable</th>
+                                        <th class="text-center">Management IP</th>
+                                        <th class="text-center">Model</th>
+                                        <th class="text-center">Software Version</th>
+                                        <th class="text-center">Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for device in device_list %}
+                                    <tr>
+                                        <td>
+                                            <label class="radio">
+                                                <input type="radio" name="target-device" value="{{ device }}">
+                                                <span class="radio__input"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="icon-switch-outline icon-size-20 half-margin-right text-light"></span>
+                                            <span>{{ device_list[device].name }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if device_list[device].reachability == "Reachable" %}
+                                            <span class="icon-check text-success"></span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">{{ device }}</td>
+                                        <td class="text-center">{{ device_list[device].platform }}</td>
+                                        <td class="text-center">{{ device_list[device].version }}</td>
+                                        <td class="text-center">{{ device_list[device].location }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pull-right section">
+                                <input id="submit" onclick="showLoadingText()"
+                                    onload="showOriginalText('Select Device')" class="btn btn-primary" type="submit"
+                                    value="Select Device">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

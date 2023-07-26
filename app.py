@@ -258,8 +258,8 @@ def status():
             # Check template deployment status...
             getTemplateDeployStatus()
             # If template was deployed successfully, delete it to keep DNAC template list clean
-            # if session["deploymentStatus"] == "success" and session["templateID"]:
-            #    deleteTemplate()
+            if session["deploymentStatus"] == "success" and session["templateID"]:
+                deleteTemplate()
 
     return render_template(
         "status.html",

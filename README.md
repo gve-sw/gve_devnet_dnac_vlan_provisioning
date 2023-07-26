@@ -110,6 +110,10 @@ If config templates also need to be overwritten, add `-v <path-to-config_templat
 
 Alternatively, a docker-compose.yml file has been included as well.
 
+# Related Sandbox
+
+- [Cisco DNA Center Lab](https://devnetsandbox.cisco.com/RM/Diagram/Index/b8d7aa34-aa8f-4bf2-9c42-302aaa2daafb?diagramType=Topology)
+
 # Screenshots
 
 ### Step 1 - Selecting a device

@@ -1,5 +1,7 @@
 # DNA Center - VLAN / Port provisioning
 
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/gve-sw/gve_devnet_dnac_vlan_provisioning)
+
 This repository contains sample code for deploying interface VLAN configuration to Cisco DNA Center via a simplified web interface. This allows someone to create new VLANs & assign them to switch interfaces, without needing to access DNA center or have knowledge of the underlying device configuration.
 
 The web application walks through the following workflow:

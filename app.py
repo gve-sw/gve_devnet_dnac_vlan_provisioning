@@ -23,6 +23,7 @@ from jinja2 import Environment, FileSystemLoader
 from time import sleep
 import re
 from dnacentersdk import api
+from dnacentersdk.exceptions import ApiError
 from flask_session import Session
 from dotenv import load_dotenv
 import os
@@ -414,6 +415,7 @@ def getTemplateID() -> None:
     project = dnac.configuration_templates.get_projects(
         name=dnac_config["templates"]["project"]
     )
+    template_id = None
     for template in project[0]["templates"]:
         if template["name"] == (
             dnac_config["templates"]["template"] + "-" + session["author"]
@@ -422,7 +424,6 @@ def getTemplateID() -> None:
             app.logger.info(f"Found Template ID: {template_id}")
             break
         else:
-            template_id = None
             app.logger.info("No template ID found")
     # Store template ID
     session["templateID"] = template_id
@@ -567,9 +568,16 @@ def getTemplateDeployStatus() -> None:
     dnac = getDNACSession()
 
     # Ask DNAC for currernt status of template deployment
-    response = dnac.configuration_templates.get_template_deployment_status(
-        deployment_id=session["deploy_id"]
-    )
+    try:
+        response = dnac.configuration_templates.get_template_deployment_status(
+            deployment_id=session["deploy_id"]
+        )
+    except ApiError as e:
+        # Some times DNAC will give 500 while querying status
+        app.logger.info("Error checking deployment status:")
+        app.logger.info(e)
+        return
+
     app.logger.info(f"Deployment status: {response['status']}")
     # Check to see if deployment was successful, failed, or still in progress
     if response["status"] == "SUCCESS":

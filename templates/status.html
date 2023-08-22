@@ -35,7 +35,11 @@
         <div class="section">
             <div class="panel panel--loose panel--raised base-margin-bottom">
                 <form action="/status" method="POST">
+                    {% if status == "success" %}
+                    <button class="btn btn--primary pull-right" disabled>Refresh Status</button>
+                    {% else %}
                     <button class="btn btn--primary pull-right">Refresh Status</button>
+                    {% endif %}
                 </form>
 
                 <h2 class="subtitle">Step 5: Deployment</h2>
@@ -63,7 +67,7 @@
                     <div class="form-group base-margin-bottom">
 
                         <div class="form-group__text">
-                            <textarea id="textarea-state-disabled" rows="20" disabled=""
+                            <textarea id="textarea-state-disabled" rows="20" readonly=""
                                 style="font: 1.3rem Inconsolata, monospace;">
 {{ deployed_config }}
                             </textarea>

@@ -71,7 +71,8 @@
         <div class="section">
             <div class="panel panel--loose panel--raised base-margin-bottom">
                 <h2 class="subtitle">Step 2: Select Device</h2>
-                <p>Select target device below for provisioning</p>
+                <p>Select target device below for provisioning.</p>
+                <p><b>Note:</b> Unreachable devices may not be selected.</p>
 
                 <div class="section">
                     <form action="/select-device" method="POST">
@@ -94,8 +95,14 @@
                                     <tr>
                                         <td>
                                             <label class="radio">
+                                                {% if device_list[device].reachability == "Reachable" %}
                                                 <input type="radio" name="target-device" value="{{ device }}">
                                                 <span class="radio__input"></span>
+                                                {% else %}
+                                                <input type="radio" name="target-device" value="{{ device }}" disabled>
+                                                <span class="radio__input disabled"></span>
+                                                {% endif %}
+
                                             </label>
                                         </td>
                                         <td>
@@ -106,6 +113,8 @@
                                         <td class="text-center">
                                             {% if device_list[device].reachability == "Reachable" %}
                                             <span class="icon-check text-success"></span>
+                                            {% else %}
+                                            <span class="icon-exit text-danger"></span>
                                             {% endif %}
                                         </td>
                                         <td class="text-center">{{ device }}</td>

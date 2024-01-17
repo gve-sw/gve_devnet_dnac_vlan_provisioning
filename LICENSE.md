@@ -1,6 +1,6 @@
 CISCO SAMPLE CODE LICENSE
                                   Version 1.1
-                Copyright (c) 2020 Cisco and/or its affiliates
+                Copyright (c) 2024 Cisco and/or its affiliates
 
    These terms govern this Cisco Systems, Inc. ("Cisco"), example or demo
    source code and its associated documentation (together, the "Sample
@@ -28,7 +28,7 @@ CISCO SAMPLE CODE LICENSE
       and services are licensed under their own separate terms and you shall
       not use the Sample Code in any way that violates or is inconsistent
       with those terms (for more information, please visit:
-      www.cisco.com/go/terms).
+      <www.cisco.com/go/terms>).
 
    3. OWNERSHIP: Cisco retains sole and exclusive ownership of the Sample
       Code, including all intellectual property rights therein, except with

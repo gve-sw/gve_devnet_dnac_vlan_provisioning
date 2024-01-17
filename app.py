@@ -1,4 +1,4 @@
-""" Copyright (c) 2023 Cisco and/or its affiliates.
+""" Copyright (c) 2024 Cisco and/or its affiliates.
 This software is licensed to you under the terms of the Cisco Sample
 Code License, Version 1.1 (the "License"). You may obtain a copy of the
 License at
@@ -13,24 +13,26 @@ or implied.
 """
 
 # Import Section
-from flask import Flask, render_template, request, redirect, flash, session
-import sys
-import string
-from datetime import datetime
-import secrets
-import yaml
-from jinja2 import Environment, FileSystemLoader
-from time import sleep
+import os
 import re
+import secrets
+import string
+import sys
+from datetime import datetime
+from time import sleep
+
+import yaml
 from dnacentersdk import api
 from dnacentersdk.exceptions import ApiError
-from flask_session import Session
 from dotenv import load_dotenv
-import os
+from flask import Flask, redirect, render_template, request, session
+from jinja2 import Environment, FileSystemLoader
+
+from flask_session import Session
 
 # Load environment variables
 load_dotenv()
-CUSTOMER_NAME = os.getenv("CUSTOMER_NAME", "Cisco DNA Center")
+CUSTOMER_NAME = os.getenv("CUSTOMER_NAME", "Cisco Catalyst Center")
 # App Mode enables single-credential or multiple-credential authentication to DNA Center.
 # SINGLEAUTH mode means that the credentials used to log into the web app are also used to push templates to DNA Center.
 # MULTIAUTH mode allows users with DNAC read-only API access to use this app by providing a separate API write credential
@@ -92,6 +94,12 @@ def login():
 
     Collect user credentials & check ability to log into DNAC.
     """
+    # Set up session data
+    session["deploymentError"] = None
+    session["deploymentStatus"] = None
+    session["template_payload"] = None
+    session["target_device"] = None
+
     # On GET, render login page:
     if request.method == "GET":
         # If already authenticated, redirect
@@ -137,7 +145,6 @@ def login():
                 error=errormessage,
                 customer_name=CUSTOMER_NAME,
             )
-
         if dnac.access_token != "":
             # As long we verified we could authenticate once, mark session as authenticated
             # and send user to VLAN provisioning page
@@ -145,7 +152,7 @@ def login():
             return redirect("/select-device")
         else:
             # If for some reason we don't have an authentication token, return login page & error
-            errormessage = f"Invalid DNAC access token"
+            errormessage = "Invalid DNAC access token"
             session["auth"] = False
             return render_template(
                 "login.html",
@@ -218,21 +225,18 @@ def vlan_provision():
     # If form submitted, generate template & upload to DNAC
     # then push for provisioning
     if request.method == "POST":
-        # Generate unique template ID based on session cookie.
-        # This allows multiple people to use app without overwriting the same template
-        session["template_uid"] = request.cookies.get("session")[-18:]
         # Generate / Upload / Deploy template via DNAC
         generateTemplatePayload(request.json)
         uploadTemplate(
             session["template_payload"], devices[session.get("target_device")]
         )
-        deployTemplate(devices[session.get("target_device")])
         session["deploymentStatus"] = None
+        deployTemplate(devices[session.get("target_device")])
         # Return status page after deployment is started
         return redirect("/status")
 
     # On first page load, query device interfaces to populate drag & drop
-    if not "interfaces" in devices[session.get("target_device")].keys():
+    if "interfaces" not in devices[session.get("target_device")].keys():
         getDeviceInterfaces(session.get("target_device"))
 
     return render_template(
@@ -313,7 +317,7 @@ def getDNACDevices(filter: str) -> None:
         device_list[mgtIP]["family"] = device["family"]
         device_list[mgtIP]["series"] = device["series"]
         timestamp = datetime.fromtimestamp(device["lastUpdateTime"] / 1000)
-        device_list[mgtIP]["lastupdate"] = timestamp.strftime(f"%b %d %Y, %I:%M%p")
+        device_list[mgtIP]["lastupdate"] = timestamp.strftime("%b %d %Y, %I:%M%p")
 
     # Query device location
     for device in device_list:
@@ -341,7 +345,7 @@ def getDeviceInterfaces(device_ip: str) -> None:
 
     for interface in interfaces["response"]:
         # Only select GigabitEthernet interfaces on the first module.
-        # Should skip management interface & NIM slots
+        # Should skip management interface, NIM slots, and AppGig interface
         if re.match("^GigabitEthernet\d\/0\/\d", interface["portName"]):
             # Store interface name to UUID mapping
             session["dnac_devices"][device_ip]["interfaces"][
@@ -544,10 +548,17 @@ def deployTemplate(device_info: dict) -> None:
     session["deploymentStatus"] = "inprogress"
     session["deploymentError"] = None
     # Deploy template
-    deploy_template = dnac.configuration_templates.deploy_template(
-        templateId=session["templateID"],
-        targetInfo=target_devices,
-    )
+    try:
+        deploy_template = dnac.configuration_templates.deploy_template(
+            templateId=session["templateID"],
+            targetInfo=target_devices,
+        )
+    except ApiError as e:
+        app.logger.error("Error deploying template: ")
+        app.logger.error(e)
+        session["deploymentStatus"] = "fail"
+        session["deploymentError"] = str(e)
+        return
     # Grab deployment UUID
     session["deploy_id"] = str(deploy_template.deploymentId).split(":")[-1].strip()
     # If any errors are generated, they are included in the deploymentId field

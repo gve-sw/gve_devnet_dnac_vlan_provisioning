@@ -1,16 +1,16 @@
-# DNA Center - VLAN / Port provisioning
+# Catalyst Center - VLAN / Port provisioning
 
 [![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/gve-sw/gve_devnet_dnac_vlan_provisioning)
 
-This repository contains sample code for deploying interface VLAN configuration to Cisco DNA Center via a simplified web interface. This allows someone to create new VLANs & assign them to switch interfaces, without needing to access DNA center or have knowledge of the underlying device configuration.
+This repository contains sample code for deploying interface VLAN configuration to Cisco Catalyst Center via a simplified web interface. This allows someone to create new VLANs & assign them to switch interfaces, without needing to access Catalyst Center or have knowledge of the underlying device configuration.
 
 The web application walks through the following workflow:
 
-- Select a DNA center appliance & log in
-- Search DNA Center for network switches using a hostname filter
+- Select a Catalyst Center appliance & log in
+- Search Catalyst Center for network switches using a hostname filter
 - Use a web form to create new VLANs, then drag & drop interfaces to each VLAN
-- Deploy the provided VLAN/interface configuration to the target device via DNA Center templates
-- Monitor DNA center template deployment status & view configuration summary
+- Deploy the provided VLAN/interface configuration to the target device via Catalyst Center templates
+- Monitor Catalyst Center template deployment status & view configuration summary
 
 ## Contacts
 
@@ -18,7 +18,7 @@ The web application walks through the following workflow:
 
 ## Solution Components
 
-- DNA Center
+- Catalyst Center
 - Catalyst Switching
 - Python / Flask
 
@@ -36,7 +36,7 @@ git clone <repo_url>
 pip install -r requirements.txt
 ```
 
-### **Step 3 - Provide DNA Center list**
+### **Step 3 - Provide Catalyst Center list**
 
 In order to use this script, a YAML file of DNAC addresses must be provided. This file must be named `dna-servers.yml`. This file also contains the provisioning project & template names.
 
@@ -78,9 +78,9 @@ A few additional items may be configured via environment variables. Environment 
 
 There are two authentication modes for this web app, single or multiple.
 
-Single authentication mode is the default and will be used if no other configuration is specified. In this mode, the web app user provides their DNA-C login credentials - and that user account is used for all subsequent API calls to DNA Center.
+Single authentication mode is the default and will be used if no other configuration is specified. In this mode, the web app user provides their DNA-C login credentials - and that user account is used for all subsequent API calls to Catalyst Center.
 
-Multiple authentication mode is intended to be used in situations where the end user does not have API write access to DNA Center. In this mode, the user still logs into the web app with their own DNA-C user account. However, these credentials are only used to authenticate to DNA-C & ensure the user has access. All subsequent API calls are performed by a separate DNA-C service account with write access to the API. This ensures that the end user can accomplish the provisioning without their DNA Center account requiring API write privileges.
+Multiple authentication mode is intended to be used in situations where the end user does not have API write access to Catalyst Center. In this mode, the user still logs into the web app with their own DNA-C user account. However, these credentials are only used to authenticate to DNA-C & ensure the user has access. All subsequent API calls are performed by a separate DNA-C service account with write access to the API. This ensures that the end user can accomplish the provisioning without their Catalyst Center account requiring API write privileges.
 
 Multiple authentication can be configured by setting the following environment variables:
 
@@ -114,7 +114,7 @@ Alternatively, a docker-compose.yml file has been included as well.
 
 # Related Sandbox
 
-- [Cisco DNA Center Lab](https://devnetsandbox.cisco.com/RM/Diagram/Index/b8d7aa34-aa8f-4bf2-9c42-302aaa2daafb?diagramType=Topology)
+- [Cisco Catalyst Center Lab](https://devnetsandbox.cisco.com/RM/Diagram/Index/b8d7aa34-aa8f-4bf2-9c42-302aaa2daafb?diagramType=Topology)
 
 # Screenshots
 

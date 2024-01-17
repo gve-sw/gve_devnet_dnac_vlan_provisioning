@@ -5,7 +5,7 @@ services:
     image: ghcr.io/gve-sw/gve_devnet_dnac_vlan_provisioning:latest
     container_name: gve_devnet_dnac_vlan_provisioning
     volumes:
-      - /config_templates:/app/config_templates/
+      - ./config_templates:/app/config_templates/
       - ./dna-servers.yaml:/app/dna-servers.yaml
     ports:
       - "5000:5000"

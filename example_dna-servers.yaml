@@ -1,10 +1,10 @@
 servers:
   server-name-01:
-    alias: DNA 01
+    alias: Catalyst Center 01
     address: 10.10.10.10
   server-name-02:
-    alias: DNA 02
+    alias: Catalyst Center 02
     address: 10.20.20.20
 templates:
-  project: DNAC_Project
+  project: Catalyst_Center_Project
   template: api_port_vlan_config
